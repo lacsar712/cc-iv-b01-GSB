@@ -33,4 +33,13 @@ DROP TRIGGER IF EXISTS trg_iv_scan_notify ON iv_scans;
 CREATE TRIGGER trg_iv_scan_notify
 AFTER INSERT ON iv_scans
 FOR EACH ROW EXECUTE FUNCTION notify_iv_scan();
+
+-- 每个组串只保留一笔对照窗：string_code 主键，抢改也只会落到同一行
+CREATE TABLE IF NOT EXISTS compare_windows (
+    string_code text PRIMARY KEY,
+    start_date date NOT NULL,
+    days integer NOT NULL CHECK (days BETWEEN 1 AND 366),
+    updated_by text NOT NULL,
+    updated_at timestamptz NOT NULL
+);
 """
